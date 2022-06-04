@@ -9,22 +9,29 @@ import "@openzeppelin/contracts/utils/cryptography/draft-EIP712.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/draft-ERC721Votes.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 
-contract Whitepaper is ERC721, ERC721URIStorage, ERC721Burnable, Ownable, EIP712, ERC721Votes {
+contract Whitepaper is
+    ERC721,
+    ERC721URIStorage,
+    ERC721Burnable,
+    Ownable,
+    EIP712,
+    ERC721Votes
+{
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIdCounter;
-    mapping(uint256 => string) internal _tokenText;        // Mapping for Case Contracts
+    mapping(uint256 => string) internal _tokenText; // Mapping for Case Contracts
 
-    constructor() ERC721("WhitePaper", "WP") EIP712("WhitePaper", "1.0") {
+    constructor() ERC721("WhitePaper", "WP") EIP712("WhitePaper", "1.0") {}
 
-    }
-
-    function typewrite (uint256 tokenId, string calldata _text) external {
+    function typewrite(uint256 tokenId, string[] calldata _text) external {
         //Validate
         // bytes memory tempEmptyStringTest = bytes(emptyStringTest); // Uses memory
-// if (tempEmptyStringTest.length == 0) {
+        // if (tempEmptyStringTest.length == 0) {
 
-
-        require(_msgSender() == ownerOf(tokenId), "Only the owner can call this function");
+        require(
+            _msgSender() == ownerOf(tokenId),
+            "Only the owner can call this function"
+        );
         // require(bytes(_tokenText[tokenId]) == "0x", "Paper Already Written");
         //Save
         _tokenText[tokenId] = _text;
@@ -39,18 +46,66 @@ contract Whitepaper is ERC721, ERC721URIStorage, ERC721Burnable, Ownable, EIP712
 
     // The following functions are overrides required by Solidity.
 
-    function _afterTokenTransfer(address from, address to, uint256 tokenId)
-        internal
-        override(ERC721, ERC721Votes)
-    {
+    function _afterTokenTransfer(
+        address from,
+        address to,
+        uint256 tokenId
+    ) internal override(ERC721, ERC721Votes) {
         super._afterTokenTransfer(from, to, tokenId);
     }
 
-    function _burn(uint256 tokenId) internal override(ERC721, ERC721URIStorage) {
+    function _burn(uint256 tokenId)
+        internal
+        override(ERC721, ERC721URIStorage)
+    {
         super._burn(tokenId);
     }
 
-    function tokenURI(uint256 tokenId) public view override(ERC721, ERC721URIStorage) returns (string memory) {
-        return super.tokenURI(tokenId);
+    function tokenURI(uint256 tokenId)
+        public
+        view
+        override(ERC721, ERC721URIStorage)
+        returns (string memory)
+    {
+        string memory json = Base64.encode(
+            bytes(
+                string(
+                    abi.encodePacked(
+                        '{"name": "',
+                        "testME",
+                        '",',
+                        '"image_data": "',
+                        _createSvg(tokenId),
+                        '"',
+                        "}"
+                    )
+                )
+            )
+        );
+        return string(abi.encodePacked("data:application/json;base64,", json));
+    }
+
+    function _createSvg(uint256 tokenId) private view returns (bytes memory) {
+        bytes memory svgText;
+        bytes memory SVGPrefix;
+        bytes memory SVGSuffix;
+        bytes memory returnedSVG;
+        SVGPrefix = "<svg x='0mm' y='0mm' width='105mm' height='99mm'  xmlns='http://www.w3.org/2000/svg'> <style> .small { font: italic 13px sans-serif; } .heavy { font: bold 30px sans-serif; }</style><text x='20' y='35' class='small'>";
+        for (uint256 i = 0; i < _tokenText[tokenId].length; i++) {
+            bytes memory tspan;
+            tspan = abi.encodePacked(
+                "<tspan x='5' y='",
+                Strings.toString(15 * i),
+                "'>"
+            );
+            string memory currentLine = _tokenText[tokenId][i];
+            tspan = abi.encodePacked(tspan, currentLine, "</tspan>");
+            svgText = abi.encodePacked(svgText, tspan);
+        }
+        SVGSuffix = "</text></svg>";
+
+        returnedSVG = bytes(abi.encodePacked(SVGPrefix, svgText, SVGSuffix));
+
+        return returnedSVG;
     }
 }
