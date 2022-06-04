@@ -19,29 +19,36 @@ contract Whitepaper is
 {
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIdCounter;
-    mapping(uint256 => string) internal _tokenText; // Mapping for Case Contracts
+
+    mapping(uint256 => bool) internal _notEmpty; // YOLO
+
+    //Token Text (Arrayof 74 rows)
+    // mapping(uint256 => string) internal _tokenText;        // Mapping for Case Contracts
+    mapping(uint256 => string[75]) internal _tokenText; // Mapping for Case Contracts
 
     constructor() ERC721("WhitePaper", "WP") EIP712("WhitePaper", "1.0") {}
 
-    function typewrite(uint256 tokenId, string[] calldata _text) external {
-        //Validate
-        // bytes memory tempEmptyStringTest = bytes(emptyStringTest); // Uses memory
-        // if (tempEmptyStringTest.length == 0) {
+    //TODO: Pricing Function
+    function price(uint256 _tokenId) public view returns (uint256) {}
 
+    function typewrite(uint256 tokenId, string[75] memory _text) external {
+        //Validate
         require(
             _msgSender() == ownerOf(tokenId),
             "Only the owner can call this function"
         );
-        // require(bytes(_tokenText[tokenId]) == "0x", "Paper Already Written");
+        //Singe Write for each token
+        // require(keccak256(abi.encodePacked(_tokenText[tokenId])) == keccak256(abi.encodePacked("")), "Paper Already Written");
+        require(!_notEmpty[tokenId], "Paper Already Written");
         //Save
         _tokenText[tokenId] = _text;
     }
 
-    function safeMint(address to, string memory uri) public onlyOwner {
+    function mint(address to) public onlyOwner {
         uint256 tokenId = _tokenIdCounter.current();
         _tokenIdCounter.increment();
         _safeMint(to, tokenId);
-        _setTokenURI(tokenId, uri);
+        // _setTokenURI(tokenId, uri);
     }
 
     // The following functions are overrides required by Solidity.
