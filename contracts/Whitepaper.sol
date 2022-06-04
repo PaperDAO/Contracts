@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.7;
 
+import "hardhat/console.sol";
+
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Burnable.sol";
@@ -29,6 +31,9 @@ contract Whitepaper is
     uint256 _lastPrice;
     
 
+    /// URI Chnage Event
+    event URI(string value, uint256 indexed id);
+
     mapping(uint256 => bool) internal _notEmpty; // YOLO
 
     //Token Text (Arrayof 74 rows)
@@ -37,9 +42,14 @@ contract Whitepaper is
 
     constructor() ERC721("WhitePaper", "WP") EIP712("WhitePaper", "1.0") {}
 
+    //Price for next Mint
+    function mintPrice() public returns (uint256){
+        return price(_tokenIdCounter.current() + 1);
+    }
 
-    /// ?? Get Price for Token
+    /// Get Price for Token
     function price(uint256 _tokenId) public view returns (uint256) {
+        // unit256 curPrice;
         if(_tokenId <= _confPriceStartItems) return _confPriceStart;
         else{
             // _lastPrice = _confPriceTop;
@@ -51,15 +61,29 @@ contract Whitepaper is
 
     }
 
+    getAddress() external returns (address){
+
+    }
+    
+    //Get Token Text
+    getText(uint256 _tokenId) external returns (string[] memory){
+        return _tokenText[_tokenId];
+    }
+
     function typewrite(uint256 tokenId, string[] memory _text) external {
         //Validate
         require(
             _msgSender() == ownerOf(tokenId),
             "Only the owner can call this function"
         );
-        //Singe Write for each token
-        // require(keccak256(abi.encodePacked(_tokenText[tokenId])) == keccak256(abi.encodePacked("")), "Paper Already Written");
+
+        console.log("Sender", _msgSender());
+        console.log("Owner", tokenId, ownerOf(tokenId));
+        
+
+        //Single Write for each token
         require(!_notEmpty[tokenId], "Paper Already Written");
+
         //Save
         _tokenText[tokenId] = _text;
     }
