@@ -19,6 +19,14 @@ contract Whitepaper is
 {
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIdCounter;
+    //Conf
+    uint256 _confPriceStart = 10;
+    uint256 _confPriceStartItems = 1000;
+    uint256 _confPriceFloor = 10;
+    uint256 _confPriceTop = 100;
+
+    uint256 _lastPrice;
+    
 
     mapping(uint256 => bool) internal _notEmpty; // YOLO
 
@@ -28,8 +36,19 @@ contract Whitepaper is
 
     constructor() ERC721("WhitePaper", "WP") EIP712("WhitePaper", "1.0") {}
 
-    //TODO: Pricing Function
-    function price(uint256 _tokenId) public view returns (uint256) {}
+
+    /// ?? Get Price for Token
+    function price(uint256 _tokenId) public view returns (uint256) {
+        if(_tokenId <= _confPriceStartItems) return _confPriceStart;
+        else{
+            // _lastPrice = _confPriceTop;
+
+            //TODO: Pricing Function
+            // else return _confPriceTop;
+        }
+        
+
+    }
 
     function typewrite(uint256 tokenId, string[75] memory _text) external {
         //Validate
