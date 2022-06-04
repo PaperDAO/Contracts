@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.4;
+pragma solidity ^0.8.7;
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
@@ -8,6 +8,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/cryptography/draft-EIP712.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/draft-ERC721Votes.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
+import "./base64.sol";
 
 contract Whitepaper is
     ERC721,
@@ -32,7 +33,7 @@ contract Whitepaper is
 
     //Token Text (Arrayof 74 rows)
     // mapping(uint256 => string) internal _tokenText;        // Mapping for Case Contracts
-    mapping(uint256 => string[75]) internal _tokenText; // Mapping for Case Contracts
+    mapping(uint256 => string[]) internal _tokenText; // Mapping for Case Contracts
 
     constructor() ERC721("WhitePaper", "WP") EIP712("WhitePaper", "1.0") {}
 
@@ -50,7 +51,7 @@ contract Whitepaper is
 
     }
 
-    function typewrite(uint256 tokenId, string[75] memory _text) external {
+    function typewrite(uint256 tokenId, string[] memory _text) external {
         //Validate
         require(
             _msgSender() == ownerOf(tokenId),
@@ -63,9 +64,9 @@ contract Whitepaper is
         _tokenText[tokenId] = _text;
     }
 
-    function mint(address to) public onlyOwner {
-        uint256 tokenId = _tokenIdCounter.current();
+    function mint(address to) public {
         _tokenIdCounter.increment();
+        uint256 tokenId = _tokenIdCounter.current();
         _safeMint(to, tokenId);
         // _setTokenURI(tokenId, uri);
     }
@@ -116,19 +117,20 @@ contract Whitepaper is
         bytes memory SVGPrefix;
         bytes memory SVGSuffix;
         bytes memory returnedSVG;
-        SVGPrefix = "<svg x='0mm' y='0mm' width='105mm' height='99mm'  xmlns='http://www.w3.org/2000/svg'> <style> .small { font: italic 13px sans-serif; } .heavy { font: bold 30px sans-serif; }</style><text x='20' y='35' class='small'>";
+        SVGPrefix = "<svg width='2494' height='3523' viewBox='0 0 2494 3523' fill='none' xmlns='http://www.w3.org/2000/svg'> <g filter='url(#filter0_d_1815_20075)'> <path d='M0 0.5H2480V3508.5H184.642L0 3309.79V0.5Z' fill='white'/> <path d='M187.142 3309.79V3307.29H184.642H2.5V3H2477.5V3506H187.142V3309.79ZM182.142 3312.29V3502.14L5.73556 3312.29H182.142Z' stroke='#A3A1A1' stroke-width='5'/> </g> <defs> <filter id='filter0_d_1815_20075' x='0' y='0.5' width='2494' height='3522' filterUnits='userSpaceOnUse' color-interpolation-filters='sRGB'> <feFlood flood-opacity='0' result='BackgroundImageFix'/><feColorMatrix in='SourceAlpha' type='matrix' values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0' result='hardAlpha'/> <feOffset dx='10' dy='10'/><feGaussianBlur stdDeviation='2'/> <feComposite in2='hardAlpha' operator='out'/> <feColorMatrix type='matrix' values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0'/> <feBlend mode='normal' in2='BackgroundImageFix' result='effect1_dropShadow_1815_20075'/> <feBlend mode='normal' in='SourceGraphic' in2='effect1_dropShadow_1815_20075' result='shape'/> </filter></defs>";
+
         for (uint256 i = 0; i < _tokenText[tokenId].length; i++) {
             bytes memory tspan;
             tspan = abi.encodePacked(
-                "<tspan x='5' y='",
-                Strings.toString(15 * i),
-                "'>"
+                "<text x='200' y='",
+                Strings.toString(250 + (100 * i)),
+                "' font-family='Arial' font-size='53.3' fill='black'>"
             );
             string memory currentLine = _tokenText[tokenId][i];
-            tspan = abi.encodePacked(tspan, currentLine, "</tspan>");
+            tspan = abi.encodePacked(tspan, currentLine, "</text>");
             svgText = abi.encodePacked(svgText, tspan);
         }
-        SVGSuffix = "</text></svg>";
+        SVGSuffix = "</svg>";
 
         returnedSVG = bytes(abi.encodePacked(SVGPrefix, svgText, SVGSuffix));
 
