@@ -25,6 +25,7 @@ contract Whitepaper is ERC721, ERC721URIStorage, ERC721Burnable, Ownable, EIP712
 
     }
 
+    //TODO: Pricing Function
     function price(uint256 _tokenId) public view returns (uint256) {
         
     }
