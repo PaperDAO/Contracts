@@ -14,7 +14,9 @@ contract MyToken is ERC721, ERC721URIStorage, ERC721Burnable, Ownable, EIP712, E
 
     Counters.Counter private _tokenIdCounter;
 
-    constructor() ERC721("MyToken", "MTK") EIP712("MyToken", "1") {}
+    constructor() ERC721("WhitePaper", "WP") EIP712("WhitePaper", "1") {
+
+    }
 
     function safeMint(address to, string memory uri) public onlyOwner {
         uint256 tokenId = _tokenIdCounter.current();
