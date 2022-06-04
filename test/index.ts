@@ -4,6 +4,11 @@ import { Contract, ContractReceipt, Signer } from "ethers";
 
 let WPContract: Contract;
 
+//Addresses
+let owner: Signer;
+let tester: Signer;
+let addrs: Signer[];
+
 /*
 describe("Greeter", function () {
   it("Should return the new greeting once it's changed", async function () {
@@ -25,16 +30,27 @@ describe("Greeter", function () {
 
 describe("Paper NFT", function () {
   before(async function () {
+    
+    //*** Signers ***/
+    //Populate Accounts
+    [owner, tester, ...addrs] = await ethers.getSigners();
+    //Addresses
+    this.ownerAddr = await owner.getAddress();
+    this.testerAddr = await tester.getAddress();
+
     WPContract = await ethers.getContractFactory("Whitepaper").then(res => res.deploy());
     await WPContract.deployed();
   });
 
   it("Should Mint", async function () {
-    WPContract.mint();
+    //Mint for Tester
+    WPContract.mint(this.testerAddr);
+    //Mint By Tester (Open Minting)
+    WPContract.connect(tester).mint(this.ownerAddr);
   });
 
   it("Should Write", async function () {
-    
+    WPContract.connect(tester).typewrite(1, "Hello, world!");
   });
 
   
