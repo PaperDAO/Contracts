@@ -9,6 +9,8 @@ let owner: Signer;
 let tester: Signer;
 let addrs: Signer[];
 
+const content = ["Hello, world!", "What's up?","","Yo!"];
+
 /*
 describe("Greeter", function () {
   it("Should return the new greeting once it's changed", async function () {
@@ -49,13 +51,34 @@ describe("Paper NFT", function () {
     WPContract.connect(tester).mint(this.ownerAddr);
   });
 
+  it("Should be Secure", async function () {
+
+    console.log(`Owner: ${this.ownerAddr} | Tester: ${this.testerAddr}`);
+
+    await expect(
+      WPContract.connect(addrs[3]).typewrite(1, content)
+    ).to.be.revertedWith("ERROR");
+
+    WPContract.connect(addrs[4]).typewrite(1, content)
+
+  });
+
   it("Should Write", async function () {
-    WPContract.connect(tester).typewrite(1, "Hello, world!");
+    WPContract.connect(tester).typewrite(1, content);
+    WPContract.connect(owner).typewrite(2, content);
+
+    await expect(
+      WPContract.connect(tester).typewrite(1, content)
+    ).to.be.revertedWith("Sorry, Assets are non-transferable");
+
+    
+ 
+    // WPContract.connect(owner).typewrite(2, content);
   });
 
   
-  it("Should be Secure", async function () {
-    
-  });
+  it("Should Not Again", async function () {
 
+  });
+  
 });
