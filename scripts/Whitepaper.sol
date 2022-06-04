@@ -23,10 +23,7 @@ contract MyToken is ERC721, ERC721Burnable, Ownable, EIP712, ERC721Votes {
 
     // The following functions are overrides required by Solidity.
 
-    function _afterTokenTransfer(address from, address to, uint256 tokenId)
-        internal
-        override(ERC721, ERC721Votes)
-    {
+    function _afterTokenTransfer(address from, address to, uint256 tokenId) internal override(ERC721, ERC721Votes) {
         super._afterTokenTransfer(from, to, tokenId);
     }
 }
