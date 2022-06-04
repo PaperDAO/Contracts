@@ -9,13 +9,25 @@ import "@openzeppelin/contracts/utils/cryptography/draft-EIP712.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/draft-ERC721Votes.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 
-contract MyToken is ERC721, ERC721URIStorage, ERC721Burnable, Ownable, EIP712, ERC721Votes {
+contract Whitepaper is ERC721, ERC721URIStorage, ERC721Burnable, Ownable, EIP712, ERC721Votes {
     using Counters for Counters.Counter;
-
     Counters.Counter private _tokenIdCounter;
+    mapping(uint256 => string) internal _tokenText;        // Mapping for Case Contracts
 
     constructor() ERC721("WhitePaper", "WP") EIP712("WhitePaper", "1.0") {
 
+    }
+
+    function typewrite (uint256 tokenId, string calldata _text) external {
+        //Validate
+        // bytes memory tempEmptyStringTest = bytes(emptyStringTest); // Uses memory
+// if (tempEmptyStringTest.length == 0) {
+
+
+        require(_msgSender() == ownerOf(tokenId), "Only the owner can call this function");
+        // require(bytes(_tokenText[tokenId]) == "0x", "Paper Already Written");
+        //Save
+        _tokenText[tokenId] = _text;
     }
 
     function safeMint(address to, string memory uri) public onlyOwner {
