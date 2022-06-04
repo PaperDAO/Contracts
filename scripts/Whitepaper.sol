@@ -14,7 +14,7 @@ contract MyToken is ERC721, ERC721URIStorage, ERC721Burnable, Ownable, EIP712, E
 
     Counters.Counter private _tokenIdCounter;
 
-    constructor() ERC721("WhitePaper", "WP") EIP712("WhitePaper", "1") {
+    constructor() ERC721("WhitePaper", "WP") EIP712("WhitePaper", "1.0") {
 
     }
 
