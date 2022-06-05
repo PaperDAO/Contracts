@@ -70,7 +70,7 @@ contract Whitepaper is
     }
     
     //Get Token Text
-    function getText(uint256 _tokenId) external returns (string[] memory){
+    function getText(uint256 _tokenId) external view returns (string[] memory){
         return _tokenText[_tokenId];
     }
 

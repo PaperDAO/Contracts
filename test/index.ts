@@ -40,16 +40,9 @@ describe("Paper NFT", function () {
     //Addresses
     this.ownerAddr = await owner.getAddress();
     this.testerAddr = await tester.getAddress();
-
+    //Deploy Contract
     WPContract = await ethers.getContractFactory("Whitepaper").then(res => res.deploy());
     await WPContract.deployed();
-
-
-
-    // WPContract.connect(tester).myAddress();
-    // WPContract.connect(owner).myAddress();
-    // WPContract.connect(addrs[3]).myAddress();
-
   });
 
   it("Should Mint", async function () {
@@ -60,11 +53,8 @@ describe("Paper NFT", function () {
   });
 
   it("Should be Secure", async function () {
-
      const receipt = WPContract.connect(notOwner).typewrite(1, content);
-     
      await expect(receipt).to.be.revertedWith("Only the owner can call this function");
-
   });
 
   it("Should Write", async function () {
@@ -73,18 +63,29 @@ describe("Paper NFT", function () {
     tx.wait();
     //Expected Event
     await expect(tx).to.emit(WPContract, 'URI').withArgs(contentProcessed, 2);
-
-          
  });
 
-  
   it("Should Not Again", async function () {
     const receipt = WPContract.connect(tester).typewrite(1, content);
     await expect(receipt).to.be.revertedWith("Paper Already Written");    
   });
   
-  it("TODO: Should Mint Long", async function () {
-
+  it("Should Mint Long", async function () {
+    let inputArray = [];
+    //75 Rows of Data
+    for(let i=1; i<=75; i++){
+      inputArray.push("This is line " + i);
+    }
+    // console.log("75 rows doc",  inputArray);
+    WPContract.mint(this.testerAddr);
+    //Change
+    let tx = await WPContract.connect(tester).typewrite(3, inputArray);
+    tx.wait();
+    //Get
+    let result = await WPContract.getText(3);
+    // console.log("75 rows doc",  result);
+    //Match
+    expect(result.toString()).to.equal(inputArray.toString());
   });
 
   it("1% Royalties", async function () {
