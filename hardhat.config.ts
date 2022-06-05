@@ -44,7 +44,8 @@ const config: HardhatUserConfig = {
   networks: {
     //-- Test
     rinkeby: {
-      url: process.env.RINKEBY_URL || "",
+      // url: process.env.RINKEBY_URL || "",
+      url: "https://ethereum-rinkeby--rpc.datahub.figment.io/apikey/d58273bf8caa0c41cd34d4285657480a",
       accounts: [`${process.env.PRIVATE_KEY}`],
       //gas: 2100000,
       //gasPrice: 8000000000,
