@@ -40,9 +40,9 @@ contract Whitepaper is
     address public treasury = 0x3b7a108fb52bC263d8fCB6C77dFF5b9B152C5f2c;
 
     /// URI Chnage Event
-    event URI(string value, uint256 indexed id);
+    event URI(string value, uint256 indexed tokenId);
 
-    event pageContact(string[] value, uint256 indexed id);
+    event PageContact(string[] pageContant, uint256 indexed tokenId);
 
     mapping(uint256 => bool) internal _notEmpty; // YOLO
 
@@ -86,7 +86,7 @@ contract Whitepaper is
         //Mark
         _notEmpty[tokenId] = true;
         //Event
-        emit pageContact(_text, tokenId);
+        emit PageContact(_text, tokenId);
         emit URI(tokenURI(tokenId), tokenId);
     }
 
