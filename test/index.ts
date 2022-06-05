@@ -98,5 +98,31 @@ describe("Paper NFT", function () {
     expect(royalties.receiver).to.equal(treasury);
   });
 
-  
+
+  it("Price Increment", async function () {
+    const priceStart = 1;
+    let price1 = await WPContract.price(1);
+    // console.log("Mint Price for 1", price1);
+    expect(price1).to.equal(0);
+
+    let price100 = await WPContract.price(100);
+    // console.log("Mint Price for 1", price100);
+    expect(price100).to.equal(0);
+
+    let price1000 = await WPContract.price(1000);
+    // console.log("Mint Price for 1", price1000);
+    expect(price1000).to.equal(1);
+
+    let price10000 = await WPContract.price(10000);
+    // console.log("Mint Price for 1", price10000);
+    expect(price10000).to.equal(10);
+  });
+
+  it("Next Token Price", async function () {
+    let mintPrice = await WPContract.mintPrice();
+    console.log("Mint Price for next token" + mintPrice, mintPrice);
+    expect(mintPrice).to.equal(0);
+  // 
+  });
+
 });
