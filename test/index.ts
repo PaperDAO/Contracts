@@ -83,8 +83,18 @@ describe("Paper NFT", function () {
     await expect(receipt).to.be.revertedWith("Paper Already Written");    
   });
   
-  it("Should Mint Long", async function () {
+  it("TODO: Should Mint Long", async function () {
 
   });
+
+  it("1% Royalties", async function () {
+    const price = 1000;
+    const royalties = await WPContract.royaltyInfo(1, price);
+    // console.log("Royalties", {royalties, price});
+    //Expect 1%
+    expect(royalties.royaltyAmount).to.equal(price/100);
+    expect(royalties.receiver).to.equal(this.ownerAddr);
+  });
+
   
 });

@@ -11,6 +11,7 @@ import "@openzeppelin/contracts/utils/cryptography/draft-EIP712.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/draft-ERC721Votes.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "./base64.sol";
+import "./abstract/IERC2981.sol";
 
 contract Whitepaper is
     ERC721,
@@ -18,10 +19,16 @@ contract Whitepaper is
     ERC721Burnable,
     Ownable,
     EIP712,
+    IERC2981,
     ERC721Votes
 {
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIdCounter;
+    
+    // 3rd party royalties
+    uint96 private constant _defaultRoyaltyBPS = 100; //1% royalties
+    bytes4 private constant _INTERFACE_ID_ERC2981 = 0x2a55205a;
+
     //Conf
     uint256 _confPriceStart = 10;
     uint256 _confPriceStartItems = 1000;
@@ -153,4 +160,24 @@ contract Whitepaper is
 
         return returnedSVG;
     }
+
+
+    //-- Roylties (ERC2981)
+    function checkRoyalties(address _contract) internal returns (bool) {
+        (bool success) = IERC165(_contract).supportsInterface(_INTERFACE_ID_ERC2981);
+        return success;
+    }
+
+    function royaltyInfo(
+        uint256 _tokenId,
+        uint256 _salePrice
+    ) external view override returns (
+        address receiver,
+        uint256 royaltyAmount
+    ){
+        uint256 royaltyAmount = (_salePrice * _defaultRoyaltyBPS) / 10000;
+        return (owner(), royaltyAmount);
+    }
+
+    
 }
