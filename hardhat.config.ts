@@ -24,6 +24,7 @@ task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
 task("deploy", "deploying", async (taskArgs, hre) => {
   const Whitepaper = await hre.ethers.getContractFactory("Whitepaper");
   const whitepaper = await Whitepaper.deploy();
+  console.log("Deploying ", whitepaper.address);
   await whitepaper.deployed();
   console.log(whitepaper.address);
 });
@@ -33,7 +34,7 @@ task("deploy", "deploying", async (taskArgs, hre) => {
 
 const config: HardhatUserConfig = {
   solidity: {
-    version: "0.8.7",
+    version: "0.8.4",
     settings: {
       optimizer: {
         enabled: true,
@@ -49,7 +50,7 @@ const config: HardhatUserConfig = {
       accounts: [`${process.env.PRIVATE_KEY}`],
       //gas: 2100000,
       //gasPrice: 8000000000,
-      // gasPrice: 10000000000,
+      gasPrice: 100000000,
     },
     mumbai: {
       // url: `https://polygon-mumbai.infura.io/v3/${process.env.INFURA_KEY}`,
@@ -67,10 +68,19 @@ const config: HardhatUserConfig = {
     polygon: {
       // url: `https://polygon-mainnet.infura.io/v3/${process.env.INFURA_KEY}`,
       // url: process.env.ALCHEMY_POLYGON_URL,
-      // url: "https://rpc-mainnet.maticvigil.com/",
-      url: "https://matic-mainnet--jsonrpc.datahub.figment.io/apikey/d58273bf8caa0c41cd34d4285657480a",
+      url: "https://rpc-mainnet.maticvigil.com/",
+      // url: "https://matic-mainnet--jsonrpc.datahub.figment.io/apikey/d58273bf8caa0c41cd34d4285657480a",
       accounts: [`${process.env.PRIVATE_KEY}`],
       chainId: 137,
+      // gasPrice: 1000000000
+    },
+
+    // GNOSIS Chain
+    xdai: {
+      url: "https://rpc.gnosischain.com",
+      accounts: [`${process.env.PRIVATE_KEY}`],
+      chainId: 100,
+      // gas: 500000,
       // gasPrice: 1000000000
     },
   },
