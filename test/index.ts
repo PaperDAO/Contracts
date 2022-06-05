@@ -73,7 +73,7 @@ describe("Paper NFT", function () {
   it("Should Mint Long", async function () {
     let inputArray = [];
     //75 Rows of Data
-    for(let i=1; i<=75; i++){
+    for(let i=1; i<=74; i++){
       inputArray.push("This is line " + i);
     }
     // console.log("75 rows doc",  inputArray);
@@ -83,7 +83,7 @@ describe("Paper NFT", function () {
     tx.wait();
     //Get
     let result = await WPContract.getText(3);
-    // console.log("75 rows doc",  result);
+    // console.log("74 rows doc",  result);
     //Match
     expect(result.toString()).to.equal(inputArray.toString());
   });

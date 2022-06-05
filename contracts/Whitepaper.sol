@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.7;
 
-import "hardhat/console.sol";
+// import "hardhat/console.sol";
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
@@ -37,14 +37,13 @@ contract Whitepaper is
 
     uint256 _lastPrice;
     
-
     /// URI Chnage Event
     event URI(string value, uint256 indexed id);
     // event URIArray(string[] value, uint256 indexed id);
 
     mapping(uint256 => bool) internal _notEmpty; // YOLO
 
-    //Token Text (Arrayof 74 rows)
+    //Token Text (Array of 74 rows)
     // mapping(uint256 => string) internal _tokenText;        // Mapping for Case Contracts
     mapping(uint256 => string[]) internal _tokenText; // Mapping for Case Contracts
 
