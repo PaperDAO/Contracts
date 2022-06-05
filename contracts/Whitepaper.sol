@@ -24,7 +24,7 @@ contract Whitepaper is
 {
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIdCounter;
-    
+    uint256 public constant MAX_WHITE_PAPER_SUPPLY = 10000;
     // 3rd party royalties
     uint96 private constant _defaultRoyaltyBPS = 100; //1% royalties
     bytes4 private constant _INTERFACE_ID_ERC2981 = 0x2a55205a;
@@ -41,7 +41,8 @@ contract Whitepaper is
 
     /// URI Chnage Event
     event URI(string value, uint256 indexed id);
-    // event URIArray(string[] value, uint256 indexed id);
+
+    event pageContact(string[] value, uint256 indexed id);
 
     mapping(uint256 => bool) internal _notEmpty; // YOLO
 
@@ -52,32 +53,32 @@ contract Whitepaper is
     constructor() ERC721("WhitePaper", "WP") EIP712("WhitePaper", "1.0") {}
 
     //Price for next Mint
-    function mintPrice() public returns (uint256){
+    function mintPrice() public returns (uint256) {
         return price(_tokenIdCounter.current() + 1);
     }
 
     /// Get Price for Token
     function price(uint256 _tokenId) public view returns (uint256) {
         // unit256 curPrice;
-        if(_tokenId <= _confPriceStartItems) return _confPriceStart;
-        else{
+        if (_tokenId <= _confPriceStartItems) return _confPriceStart;
+        else {
             // _lastPrice = _confPriceTop;
-
             //TODO: Pricing Function
             // else return _confPriceTop;
         }
-        
-
     }
-    
+
     //Get Token Text
-    function getText(uint256 _tokenId) external view returns (string[] memory){
+    function getText(uint256 _tokenId) external view returns (string[] memory) {
         return _tokenText[_tokenId];
     }
 
     function typewrite(uint256 tokenId, string[] memory _text) external {
         //Validate
-        require(_msgSender() == ownerOf(tokenId), "Only the owner can call this function");
+        require(
+            _msgSender() == ownerOf(tokenId),
+            "Only the owner can call this function"
+        );
         //Single Write for each token
         require(!_notEmpty[tokenId], "Paper Already Written");
         //Save
@@ -85,11 +86,15 @@ contract Whitepaper is
         //Mark
         _notEmpty[tokenId] = true;
         //Event
-        // emit URIArray(_text, tokenId);
+        emit pageContact(_text, tokenId);
         emit URI(tokenURI(tokenId), tokenId);
     }
 
     function mint(address to) public {
+        require(
+            MAX_WHITE_PAPER_SUPPLY > _tokenIdCounter.current(),
+            "All papers was minted!"
+        );
         _tokenIdCounter.increment();
         uint256 tokenId = _tokenIdCounter.current();
         _safeMint(to, tokenId);
@@ -162,23 +167,21 @@ contract Whitepaper is
         return returnedSVG;
     }
 
-
     //-- Roylties (ERC2981)
     function checkRoyalties(address _contract) internal returns (bool) {
-        (bool success) = IERC165(_contract).supportsInterface(_INTERFACE_ID_ERC2981);
+        bool success = IERC165(_contract).supportsInterface(
+            _INTERFACE_ID_ERC2981
+        );
         return success;
     }
 
-    function royaltyInfo(
-        uint256 _tokenId,
-        uint256 _salePrice
-    ) external view override returns (
-        address receiver,
-        uint256 royaltyAmount
-    ){
+    function royaltyInfo(uint256 _tokenId, uint256 _salePrice)
+        external
+        view
+        override
+        returns (address receiver, uint256 royaltyAmount)
+    {
         uint256 royaltyAmount = (_salePrice * _defaultRoyaltyBPS) / 10000;
         return (treasury, royaltyAmount);
     }
-
-    
 }
