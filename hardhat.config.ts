@@ -66,7 +66,8 @@ const config: HardhatUserConfig = {
     polygon: {
       // url: `https://polygon-mainnet.infura.io/v3/${process.env.INFURA_KEY}`,
       // url: process.env.ALCHEMY_POLYGON_URL,
-      url: "https://rpc-mainnet.maticvigil.com/",
+      // url: "https://rpc-mainnet.maticvigil.com/",
+      url: "https://matic-mainnet--jsonrpc.datahub.figment.io/apikey/d58273bf8caa0c41cd34d4285657480a",
       accounts: [`${process.env.PRIVATE_KEY}`],
       chainId: 137,
       // gasPrice: 1000000000
