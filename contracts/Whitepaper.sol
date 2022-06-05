@@ -59,7 +59,8 @@ contract Whitepaper is
 
     /// Get Price for Token
     function price(uint256 _tokenId) public view returns (uint256) {
-        uint256 curPrice = _confPriceStart + (_tokenId/_confPriceInterval * _confPriceStep);
+        uint256 curPrice = _confPriceStart +
+            ((_tokenId / _confPriceInterval) * _confPriceStep);
         return curPrice;
     }
 
@@ -85,14 +86,16 @@ contract Whitepaper is
         emit URI(tokenURI(tokenId), tokenId);
     }
 
-    function mint(address to) public {
+    function mint(address to) public payable {
         require(
             MAX_WHITE_PAPER_SUPPLY > _tokenIdCounter.current(),
             "All papers was minted!"
         );
+        require(msg.value < mintPrice(), "not enough matics for purches");
         _tokenIdCounter.increment();
         uint256 tokenId = _tokenIdCounter.current();
         _safeMint(to, tokenId);
+        payable(treasury).transfer(msg.value);
         // _setTokenURI(tokenId, uri);
     }
 
