@@ -36,7 +36,9 @@ contract Whitepaper is
     uint256 _confPriceTop = 100;
 
     uint256 _lastPrice;
-    
+    //Treasury Address
+    address public treasury = 0x3b7a108fb52bC263d8fCB6C77dFF5b9B152C5f2c;
+
     /// URI Chnage Event
     event URI(string value, uint256 indexed id);
     // event URIArray(string[] value, uint256 indexed id);
@@ -175,7 +177,7 @@ contract Whitepaper is
         uint256 royaltyAmount
     ){
         uint256 royaltyAmount = (_salePrice * _defaultRoyaltyBPS) / 10000;
-        return (owner(), royaltyAmount);
+        return (treasury, royaltyAmount);
     }
 
     

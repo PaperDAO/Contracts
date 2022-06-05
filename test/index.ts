@@ -91,10 +91,11 @@ describe("Paper NFT", function () {
   it("1% Royalties", async function () {
     const price = 1000;
     const royalties = await WPContract.royaltyInfo(1, price);
+    const treasury = await WPContract.treasury();
     // console.log("Royalties", {royalties, price});
     //Expect 1%
     expect(royalties.royaltyAmount).to.equal(price/100);
-    expect(royalties.receiver).to.equal(this.ownerAddr);
+    expect(royalties.receiver).to.equal(treasury);
   });
 
   
