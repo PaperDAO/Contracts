@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.7;
 
-import "hardhat/console.sol";
+// import "hardhat/console.sol";
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
@@ -48,7 +48,7 @@ contract Whitepaper is
 
     //Token Text (Array of 74 rows)
     // mapping(uint256 => string) internal _tokenText;        // Mapping for Case Contracts
-    mapping(uint256 => string[]) internal _tokenText; // Mapping for Case Contracts
+    mapping(uint256 => string[]) public _tokenText; // Mapping for Case Contracts
 
     constructor() ERC721("WhitePaper", "WP") EIP712("WhitePaper", "1.0") {}
 
