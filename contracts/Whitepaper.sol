@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.7;
+pragma solidity ^0.8.4;
 
 // import "hardhat/console.sol";
 
@@ -166,20 +166,15 @@ contract Whitepaper is
     }
 
     //-- Roylties (ERC2981)
-    function checkRoyalties(address _contract) internal returns (bool) {
+    function checkRoyalties(address _contract) internal view returns (bool) {
         bool success = IERC165(_contract).supportsInterface(
             _INTERFACE_ID_ERC2981
         );
         return success;
     }
 
-    function royaltyInfo(uint256 _tokenId, uint256 _salePrice)
-        external
-        view
-        override
-        returns (address receiver, uint256 royaltyAmount)
-    {
-        uint256 royaltyAmount = (_salePrice * _defaultRoyaltyBPS) / 10000;
-        return (treasury, royaltyAmount);
+    function royaltyInfo(uint256, uint256 salePrice_) external view override returns (address receiver, uint256 royaltyAmount) {
+        uint256 royaltyAmount_ = (salePrice_ * _defaultRoyaltyBPS) / 10000;
+        return (treasury, royaltyAmount_);
     }
 }
