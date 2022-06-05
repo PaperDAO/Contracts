@@ -90,6 +90,8 @@ contract Whitepaper is
             MAX_WHITE_PAPER_SUPPLY > _tokenIdCounter.current(),
             "All papers was minted!"
         );
+         //Validate - Bot Protection
+        require(tx.origin == _msgSender(), "No Bots!");
         require(msg.value <= mintPrice(), "Insuficient Funds");
         _tokenIdCounter.increment();
         uint256 tokenId = _tokenIdCounter.current();
