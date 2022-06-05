@@ -41,11 +41,14 @@ contract Whitepaper is
     /// URI Chnage Event
     event URI(string value, uint256 indexed tokenId);
 
-    event PageContact(string[] pageContant, uint256 indexed tokenId);
+    event PageContact(
+        string pageName,
+        string[] pageContant,
+        uint256 indexed tokenId
+    );
 
     mapping(uint256 => bool) internal _notEmpty; // YOLO
 
-    //Token Text (Array of 74 rows)
     // mapping(uint256 => string) internal _tokenText;        // Mapping for Case Contracts
     mapping(uint256 => string[]) internal _tokenText; // Mapping for Case Contracts
 
@@ -69,12 +72,19 @@ contract Whitepaper is
         return _tokenText[_tokenId];
     }
 
-    function typewrite(uint256 tokenId, string[] memory _text) external {
+    function typewrite(
+        uint256 tokenId,
+        string memory pageName,
+        string[] memory _text
+    ) external {
         //Validate
         require(
             _msgSender() == ownerOf(tokenId),
             "Only the owner can call this function"
         );
+        if (bytes(pageName).length == 0) {
+            pageName = string(abi.encodePacked("whitepaper #", tokenId));
+        }
         //Single Write for each token
         require(!_notEmpty[tokenId], "Paper Already Written");
         //Save
@@ -82,7 +92,7 @@ contract Whitepaper is
         //Mark
         _notEmpty[tokenId] = true;
         //Event
-        emit PageContact(_text, tokenId);
+        emit PageContact(pageName, _text, tokenId);
         emit URI(tokenURI(tokenId), tokenId);
     }
 
