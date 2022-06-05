@@ -41,14 +41,12 @@ contract Whitepaper is
     /// URI Chnage Event
     event URI(string value, uint256 indexed tokenId);
 
-    event PageContact(
-        string pageName,
-        string[] pageContant,
-        uint256 indexed tokenId
-    );
+    event PageContact(string pageName, string[] pageContant, uint256 indexed tokenId);
 
     mapping(uint256 => bool) internal _notEmpty; // YOLO
+    mapping(uint256 => string) internal _pageName;
 
+    //Token Text (Array of 74 rows)
     // mapping(uint256 => string) internal _tokenText;        // Mapping for Case Contracts
     mapping(uint256 => string[]) internal _tokenText; // Mapping for Case Contracts
 
@@ -72,27 +70,18 @@ contract Whitepaper is
         return _tokenText[_tokenId];
     }
 
-    function typewrite(
-        uint256 tokenId,
-        string memory pageName,
-        string[] memory _text
-    ) external {
+    function typewrite(uint256 tokenId, string memory pageName, string[] memory text) external {
         //Validate
-        require(
-            _msgSender() == ownerOf(tokenId),
-            "Only the owner can call this function"
-        );
-        if (bytes(pageName).length == 0) {
-            pageName = string(abi.encodePacked("whitepaper #", tokenId));
-        }
+        require(_msgSender() == ownerOf(tokenId), "Only the owner can write the paper");
         //Single Write for each token
         require(!_notEmpty[tokenId], "Paper Already Written");
         //Save
-        _tokenText[tokenId] = _text;
+        _tokenText[tokenId] = text;
+        _pageName[tokenId] = pageName;
         //Mark
         _notEmpty[tokenId] = true;
         //Event
-        emit PageContact(pageName, _text, tokenId);
+        emit PageContact(pageName, text, tokenId);
         emit URI(tokenURI(tokenId), tokenId);
     }
 
@@ -101,7 +90,7 @@ contract Whitepaper is
             MAX_WHITE_PAPER_SUPPLY > _tokenIdCounter.current(),
             "All papers was minted!"
         );
-        require(msg.value < mintPrice(), "not enough matics for purches");
+        require(msg.value <= mintPrice(), "Insuficient Funds");
         _tokenIdCounter.increment();
         uint256 tokenId = _tokenIdCounter.current();
         _safeMint(to, tokenId);
@@ -137,7 +126,7 @@ contract Whitepaper is
                 string(
                     abi.encodePacked(
                         '{"name": "',
-                        "testME",
+                        _pageName[tokenId],
                         '",',
                         '"image_data": "',
                         _createSvg(tokenId),

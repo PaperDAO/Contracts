@@ -10,9 +10,10 @@ let tester: Signer;
 let notOwner: Signer;
 let addrs: Signer[];
 
+const pageName = "Whitepaper Name";
 const content = ["Hello, world!", "What's up?", "", "Yo!"];
 const contentProcessed =
-  "data:application/json;base64,eyJuYW1lIjogInRlc3RNRSIsImltYWdlX2RhdGEiOiAiPHN2ZyB3aWR0aD0nMjQ5NCcgaGVpZ2h0PSczNTIzJyB2aWV3Qm94PScwIDAgMjQ5NCAzNTIzJyBmaWxsPSdub25lJyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnPiA8ZyBmaWx0ZXI9J3VybCgjZmlsdGVyMF9kXzE4MTVfMjAwNzUpJz4gPHBhdGggZD0nTTAgMC41SDI0ODBWMzUwOC41SDE4NC42NDJMMCAzMzA5Ljc5VjAuNVonIGZpbGw9J3doaXRlJy8+IDxwYXRoIGQ9J00xODcuMTQyIDMzMDkuNzlWMzMwNy4yOUgxODQuNjQySDIuNVYzSDI0NzcuNVYzNTA2SDE4Ny4xNDJWMzMwOS43OVpNMTgyLjE0MiAzMzEyLjI5VjM1MDIuMTRMNS43MzU1NiAzMzEyLjI5SDE4Mi4xNDJaJyBzdHJva2U9JyNBM0ExQTEnIHN0cm9rZS13aWR0aD0nNScvPiA8L2c+IDxkZWZzPiA8ZmlsdGVyIGlkPSdmaWx0ZXIwX2RfMTgxNV8yMDA3NScgeD0nMCcgeT0nMC41JyB3aWR0aD0nMjQ5NCcgaGVpZ2h0PSczNTIyJyBmaWx0ZXJVbml0cz0ndXNlclNwYWNlT25Vc2UnIGNvbG9yLWludGVycG9sYXRpb24tZmlsdGVycz0nc1JHQic+IDxmZUZsb29kIGZsb29kLW9wYWNpdHk9JzAnIHJlc3VsdD0nQmFja2dyb3VuZEltYWdlRml4Jy8+PGZlQ29sb3JNYXRyaXggaW49J1NvdXJjZUFscGhhJyB0eXBlPSdtYXRyaXgnIHZhbHVlcz0nMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMTI3IDAnIHJlc3VsdD0naGFyZEFscGhhJy8+IDxmZU9mZnNldCBkeD0nMTAnIGR5PScxMCcvPjxmZUdhdXNzaWFuQmx1ciBzdGREZXZpYXRpb249JzInLz4gPGZlQ29tcG9zaXRlIGluMj0naGFyZEFscGhhJyBvcGVyYXRvcj0nb3V0Jy8+IDxmZUNvbG9yTWF0cml4IHR5cGU9J21hdHJpeCcgdmFsdWVzPScwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwLjI1IDAnLz4gPGZlQmxlbmQgbW9kZT0nbm9ybWFsJyBpbjI9J0JhY2tncm91bmRJbWFnZUZpeCcgcmVzdWx0PSdlZmZlY3QxX2Ryb3BTaGFkb3dfMTgxNV8yMDA3NScvPiA8ZmVCbGVuZCBtb2RlPSdub3JtYWwnIGluPSdTb3VyY2VHcmFwaGljJyBpbjI9J2VmZmVjdDFfZHJvcFNoYWRvd18xODE1XzIwMDc1JyByZXN1bHQ9J3NoYXBlJy8+IDwvZmlsdGVyPjwvZGVmcz48dGV4dCB4PScyMDAnIHk9JzI1MCcgZm9udC1mYW1pbHk9J0FyaWFsJyBmb250LXNpemU9JzUzLjMnIGZpbGw9J2JsYWNrJz5IZWxsbywgd29ybGQhPC90ZXh0Pjx0ZXh0IHg9JzIwMCcgeT0nMzUwJyBmb250LWZhbWlseT0nQXJpYWwnIGZvbnQtc2l6ZT0nNTMuMycgZmlsbD0nYmxhY2snPldoYXQncyB1cD88L3RleHQ+PHRleHQgeD0nMjAwJyB5PSc0NTAnIGZvbnQtZmFtaWx5PSdBcmlhbCcgZm9udC1zaXplPSc1My4zJyBmaWxsPSdibGFjayc+PC90ZXh0Pjx0ZXh0IHg9JzIwMCcgeT0nNTUwJyBmb250LWZhbWlseT0nQXJpYWwnIGZvbnQtc2l6ZT0nNTMuMycgZmlsbD0nYmxhY2snPllvITwvdGV4dD48L3N2Zz4ifQ==";
+  "data:application/json;base64,eyJuYW1lIjogIk5hbWUyIiwiaW1hZ2VfZGF0YSI6ICI8c3ZnIHdpZHRoPScyNDk0JyBoZWlnaHQ9JzM1MjMnIHZpZXdCb3g9JzAgMCAyNDk0IDM1MjMnIGZpbGw9J25vbmUnIHhtbG5zPSdodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2Zyc+IDxnIGZpbHRlcj0ndXJsKCNmaWx0ZXIwX2RfMTgxNV8yMDA3NSknPiA8cGF0aCBkPSdNMCAwLjVIMjQ4MFYzNTA4LjVIMTg0LjY0MkwwIDMzMDkuNzlWMC41WicgZmlsbD0nd2hpdGUnLz4gPHBhdGggZD0nTTE4Ny4xNDIgMzMwOS43OVYzMzA3LjI5SDE4NC42NDJIMi41VjNIMjQ3Ny41VjM1MDZIMTg3LjE0MlYzMzA5Ljc5Wk0xODIuMTQyIDMzMTIuMjlWMzUwMi4xNEw1LjczNTU2IDMzMTIuMjlIMTgyLjE0MlonIHN0cm9rZT0nI0EzQTFBMScgc3Ryb2tlLXdpZHRoPSc1Jy8+IDwvZz4gPGRlZnM+IDxmaWx0ZXIgaWQ9J2ZpbHRlcjBfZF8xODE1XzIwMDc1JyB4PScwJyB5PScwLjUnIHdpZHRoPScyNDk0JyBoZWlnaHQ9JzM1MjInIGZpbHRlclVuaXRzPSd1c2VyU3BhY2VPblVzZScgY29sb3ItaW50ZXJwb2xhdGlvbi1maWx0ZXJzPSdzUkdCJz4gPGZlRmxvb2QgZmxvb2Qtb3BhY2l0eT0nMCcgcmVzdWx0PSdCYWNrZ3JvdW5kSW1hZ2VGaXgnLz48ZmVDb2xvck1hdHJpeCBpbj0nU291cmNlQWxwaGEnIHR5cGU9J21hdHJpeCcgdmFsdWVzPScwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAxMjcgMCcgcmVzdWx0PSdoYXJkQWxwaGEnLz4gPGZlT2Zmc2V0IGR4PScxMCcgZHk9JzEwJy8+PGZlR2F1c3NpYW5CbHVyIHN0ZERldmlhdGlvbj0nMicvPiA8ZmVDb21wb3NpdGUgaW4yPSdoYXJkQWxwaGEnIG9wZXJhdG9yPSdvdXQnLz4gPGZlQ29sb3JNYXRyaXggdHlwZT0nbWF0cml4JyB2YWx1ZXM9JzAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAuMjUgMCcvPiA8ZmVCbGVuZCBtb2RlPSdub3JtYWwnIGluMj0nQmFja2dyb3VuZEltYWdlRml4JyByZXN1bHQ9J2VmZmVjdDFfZHJvcFNoYWRvd18xODE1XzIwMDc1Jy8+IDxmZUJsZW5kIG1vZGU9J25vcm1hbCcgaW49J1NvdXJjZUdyYXBoaWMnIGluMj0nZWZmZWN0MV9kcm9wU2hhZG93XzE4MTVfMjAwNzUnIHJlc3VsdD0nc2hhcGUnLz4gPC9maWx0ZXI+PC9kZWZzPjx0ZXh0IHg9JzIwMCcgeT0nMjUwJyBmb250LWZhbWlseT0nQXJpYWwnIGZvbnQtc2l6ZT0nNTMuMycgZmlsbD0nYmxhY2snPkhlbGxvLCB3b3JsZCE8L3RleHQ+PHRleHQgeD0nMjAwJyB5PSczNTAnIGZvbnQtZmFtaWx5PSdBcmlhbCcgZm9udC1zaXplPSc1My4zJyBmaWxsPSdibGFjayc+V2hhdCdzIHVwPzwvdGV4dD48dGV4dCB4PScyMDAnIHk9JzQ1MCcgZm9udC1mYW1pbHk9J0FyaWFsJyBmb250LXNpemU9JzUzLjMnIGZpbGw9J2JsYWNrJz48L3RleHQ+PHRleHQgeD0nMjAwJyB5PSc1NTAnIGZvbnQtZmFtaWx5PSdBcmlhbCcgZm9udC1zaXplPSc1My4zJyBmaWxsPSdibGFjayc+WW8hPC90ZXh0Pjwvc3ZnPiJ9";
 /*
 describe("Greeter", function () {
   it("Should return the new greeting once it's changed", async function () {
@@ -49,22 +50,15 @@ describe("Paper NFT", function () {
 
   it("Should Mint", async function () {
     //Mint for Tester
-    WPContract.mint(this.testerAddr);
+    await WPContract.mint(this.testerAddr, { value: 0});
     //Mint By Tester (Open Minting)
-    WPContract.connect(tester).mint(this.ownerAddr);
+    await WPContract.connect(tester).mint(this.ownerAddr, { value: 0});
   });
 
   it("Should be Secure", async function () {
-    WPContract.mint(this.testerAddr);
-
-    const receipt = WPContract.connect(notOwner).typewrite(
-      1,
-      "pageName",
-      content
-    );
-    await expect(receipt).to.be.revertedWith(
-      "Only the owner can call this function"
-    );
+    await WPContract.mint(this.testerAddr);
+    const receipt = WPContract.connect(notOwner).typewrite(1, pageName, content);
+    await expect(receipt).to.be.revertedWith("Only the owner can write the paper");
   });
 
   it("Should Write", async function () {
@@ -76,7 +70,7 @@ describe("Paper NFT", function () {
   });
 
   it("Should Not Again", async function () {
-    const receipt = WPContract.connect(tester).typewrite(1, content);
+    const receipt = WPContract.connect(tester).typewrite(1, pageName, content);
     await expect(receipt).to.be.revertedWith("Paper Already Written");
   });
 
@@ -89,7 +83,7 @@ describe("Paper NFT", function () {
     // console.log("75 rows doc",  inputArray);
     WPContract.mint(this.testerAddr);
     //Change
-    let tx = await WPContract.connect(tester).typewrite(3, inputArray);
+    let tx = await WPContract.connect(tester).typewrite(3, pageName, inputArray);
     tx.wait();
     //Get
     let result = await WPContract.getText(3);
