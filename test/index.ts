@@ -120,7 +120,7 @@ describe("Paper NFT", function () {
 
   it("Next Token Price", async function () {
     let mintPrice = await WPContract.mintPrice();
-    console.log("Mint Price for next token" + mintPrice, mintPrice);
+    // console.log("Mint Price for next token" + mintPrice, mintPrice);
     expect(mintPrice).to.equal(0);
   // 
   });
