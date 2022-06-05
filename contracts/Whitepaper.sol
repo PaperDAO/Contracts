@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.7;
 
-// import "hardhat/console.sol";
+import "hardhat/console.sol";
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
@@ -30,10 +30,9 @@ contract Whitepaper is
     bytes4 private constant _INTERFACE_ID_ERC2981 = 0x2a55205a;
 
     //Conf
-    uint256 _confPriceStart = 10;
-    uint256 _confPriceStartItems = 1000;
-    uint256 _confPriceFloor = 10;
-    uint256 _confPriceTop = 100;
+    uint256 _confPriceStart = 0;
+    uint256 _confPriceInterval = 1000;
+    uint256 _confPriceStep = 1;
 
     uint256 _lastPrice;
     //Treasury Address
@@ -53,19 +52,15 @@ contract Whitepaper is
     constructor() ERC721("WhitePaper", "WP") EIP712("WhitePaper", "1.0") {}
 
     //Price for next Mint
-    function mintPrice() public returns (uint256) {
-        return price(_tokenIdCounter.current() + 1);
+    function mintPrice() public view returns (uint256) {
+        uint256 nextTokenId = _tokenIdCounter.current() + 1;
+        return price(nextTokenId);
     }
 
     /// Get Price for Token
     function price(uint256 _tokenId) public view returns (uint256) {
-        // unit256 curPrice;
-        if (_tokenId <= _confPriceStartItems) return _confPriceStart;
-        else {
-            // _lastPrice = _confPriceTop;
-            //TODO: Pricing Function
-            // else return _confPriceTop;
-        }
+        uint256 curPrice = _confPriceStart + (_tokenId/_confPriceInterval * _confPriceStep);
+        return curPrice;
     }
 
     //Get Token Text
