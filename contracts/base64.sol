@@ -1,5 +1,5 @@
-// SPDX-License-Identifier: UNLICENSED
-pragma solidity ^0.8.7;
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.4;
 
 library Base64 {
     string internal constant TABLE_ENCODE =
