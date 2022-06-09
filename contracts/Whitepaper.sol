@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.4;
 
-import "hardhat/console.sol";
+// import "hardhat/console.sol";
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
@@ -101,8 +101,6 @@ contract Whitepaper is
         require(tx.origin == _msgSender(), "No Bots!");
         require(msg.value >= mintPrice(), "Insuficient Payment Sent.");
         require(msg.value == mintPrice(), "Excessive Payment Sent.");   //Dev Check
-
-        // console.log("Minting White Paper for: ", msg.value,  mintPrice());
 
         _tokenIdCounter.increment();
         uint256 tokenId = _tokenIdCounter.current();
