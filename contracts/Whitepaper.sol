@@ -11,9 +11,10 @@ import "@openzeppelin/contracts/utils/cryptography/draft-EIP712.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/draft-ERC721Votes.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "./libraries/base64.sol";
-import "./abstract/IERC2981.sol";
+import "./abstract/Royalties.sol";
+
 /**
- * @title Whitepaper - 
+ * @title Whitepaper - A Contract that mints Empty Tokens
  */
 contract Whitepaper is
     ERC721,
@@ -21,7 +22,7 @@ contract Whitepaper is
     ERC721Burnable,
     Ownable,
     EIP712,
-    IERC2981,
+    Royalties,
     ERC721Votes
 {
     //--- Storage ---
@@ -29,6 +30,7 @@ contract Whitepaper is
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIdCounter;
     uint256 public constant MAX_WHITE_PAPER_SUPPLY = 10000;
+    
     // 3rd party royalties
     uint96 private constant _defaultRoyaltyBPS = 100; //1% royalties
     bytes4 private constant _INTERFACE_ID_ERC2981 = 0x2a55205a;
@@ -40,7 +42,7 @@ contract Whitepaper is
     uint256 public _lastPrice;
 
     //Treasury Address
-    address public treasury = 0x3b7a108fb52bC263d8fCB6C77dFF5b9B152C5f2c;
+    // address public treasury = 0x3b7a108fb52bC263d8fCB6C77dFF5b9B152C5f2c;
     //Token's State (Empty/NotEmpty)
     mapping(uint256 => bool) internal _notEmpty;
     //Page/Token's Name
@@ -57,7 +59,9 @@ contract Whitepaper is
 
     //--- Functions ---
 
-    constructor() ERC721("WhitePaper", "WP") EIP712("WhitePaper", "1.0") {}
+    constructor() ERC721("WhitePaper", "WP") EIP712("WhitePaper", "1.0") {
+        treasury = 0x3b7a108fb52bC263d8fCB6C77dFF5b9B152C5f2c;
+    }
 
     //Price for next Mint
     function mintPrice() public view returns (uint256) {
@@ -170,16 +174,4 @@ contract Whitepaper is
         return bytes(abi.encodePacked(SVGPrefix, svgText, SVGSuffix));
     }
 
-    //-- Roylties (ERC2981)
-    function checkRoyalties(address _contract) internal view returns (bool) {
-        bool success = IERC165(_contract).supportsInterface(
-            _INTERFACE_ID_ERC2981
-        );
-        return success;
-    }
-
-    function royaltyInfo(uint256, uint256 salePrice_) external view override returns (address receiver, uint256 royaltyAmount) {
-        uint256 royaltyAmount_ = (salePrice_ * _defaultRoyaltyBPS) / 10000;
-        return (treasury, royaltyAmount_);
-    }
 }
