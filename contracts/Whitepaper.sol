@@ -10,9 +10,13 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/cryptography/draft-EIP712.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/draft-ERC721Votes.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
-import "./base64.sol";
+import "./libraries/base64.sol";
 import "./abstract/IERC2981.sol";
-
+/**
+ * @title Whitepaper - 
+ * [TODO] Typewriter Font Selection
+ * [TODO]
+ */
 contract Whitepaper is
     ERC721,
     ERC721URIStorage,
@@ -159,9 +163,7 @@ contract Whitepaper is
             svgText = abi.encodePacked(svgText, content);
         }
         SVGSuffix = "</svg>";
-
         returnedSVG = bytes(abi.encodePacked(SVGPrefix, svgText, SVGSuffix));
-
         return returnedSVG;
     }
 
