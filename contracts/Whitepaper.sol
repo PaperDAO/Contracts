@@ -14,8 +14,6 @@ import "./libraries/base64.sol";
 import "./abstract/IERC2981.sol";
 /**
  * @title Whitepaper - 
- * [TODO] Typewriter Font Selection
- * [TODO]
  */
 contract Whitepaper is
     ERC721,
