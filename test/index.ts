@@ -37,10 +37,30 @@ describe("Paper NFT", function () {
     await WPContract.connect(tester).mint(this.ownerAddr, { value: 0});
   });
 
+  it("Next Token Price", async function () {
+    let mintPrice = await WPContract.mintPrice();
+    // console.log("Mint Price for next token" + mintPrice, mintPrice);
+    expect(mintPrice).to.equal(0);
+    //
+  });
+  
   it("Should be Secure", async function () {
     await WPContract.mint(this.testerAddr);
     const receipt = WPContract.connect(notOwner).typewrite(1, pageName, content);
     await expect(receipt).to.be.revertedWith("Only the owner can write the paper");
+  });
+  
+  it("Should Increase Price", async function () {
+    let supply = 10000;
+    let interval = 1000;
+    // let priceStart = 0;
+    // let priceStep = 1;
+    for (let i = 4; i <= interval; i++) {
+      let price = await WPContract.mintPrice();
+      if(price > 0) console.log(" Mint "+i+" For Price of: "+price);
+      //Mint
+      await WPContract.mint(this.testerAddr, { value: price});
+    }
   });
 
   it("Should Write", async function () {
@@ -85,28 +105,25 @@ describe("Paper NFT", function () {
   });
 
   it("Price Increment", async function () {
-    const priceStart = 1;
     let price1 = await WPContract.price(1);
     // console.log("Mint Price for 1", price1);
-    expect(price1).to.equal(0);
+    expect(price1).to.equal(ethers.utils.parseEther("0"));
 
     let price100 = await WPContract.price(100);
     // console.log("Mint Price for 1", price100);
-    expect(price100).to.equal(0);
+    expect(price100).to.equal(ethers.utils.parseEther("0"));
+
+    let price999 = await WPContract.price(999);
+    // console.log("Mint Price for 1", price999);
+    expect(price999).to.equal(ethers.utils.parseEther("0"));
 
     let price1000 = await WPContract.price(1000);
     // console.log("Mint Price for 1", price1000);
-    expect(price1000).to.equal(1);
+    expect(price1000).to.equal(ethers.utils.parseEther("1"));
 
     let price10000 = await WPContract.price(10000);
     // console.log("Mint Price for 1", price10000);
-    expect(price10000).to.equal(10);
+    expect(price10000).to.equal(ethers.utils.parseEther("10"));
   });
 
-  it("Next Token Price", async function () {
-    let mintPrice = await WPContract.mintPrice();
-    // console.log("Mint Price for next token" + mintPrice, mintPrice);
-    expect(mintPrice).to.equal(0);
-    //
-  });
 });

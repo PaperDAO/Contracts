@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.4;
 
-// import "hardhat/console.sol";
+import "hardhat/console.sol";
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
@@ -24,6 +24,8 @@ contract Whitepaper is
     IERC2981,
     ERC721Votes
 {
+    //--- Storage ---
+
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIdCounter;
     uint256 public constant MAX_WHITE_PAPER_SUPPLY = 10000;
@@ -32,25 +34,28 @@ contract Whitepaper is
     bytes4 private constant _INTERFACE_ID_ERC2981 = 0x2a55205a;
 
     //Conf
-    uint256 _confPriceStart = 0;
-    uint256 _confPriceInterval = 1000;
-    uint256 _confPriceStep = 1;
+    uint256 public _confPriceStart = 0;
+    uint256 public _confPriceInterval = 1000;
+    uint256 public _confPriceStep = 1;
+    uint256 public _lastPrice;
 
-    uint256 _lastPrice;
     //Treasury Address
     address public treasury = 0x3b7a108fb52bC263d8fCB6C77dFF5b9B152C5f2c;
-
+    //Token's State (Empty/NotEmpty)
+    mapping(uint256 => bool) internal _notEmpty;
+    //Page/Token's Name
+    mapping(uint256 => string) internal _tokenName;
+    //Token Text (Array of ~32 rows)
+    mapping(uint256 => string[]) public _tokenText; 
+    
+    //--- Events ---
+       
     /// URI Chnage Event
     event URI(string value, uint256 indexed tokenId);
-
+    /// Emit Raw Page Content
     event PageContact(string pageName, string[] pageContant, uint256 indexed tokenId);
 
-    mapping(uint256 => bool) internal _notEmpty; // YOLO
-    mapping(uint256 => string) internal _pageName;
-
-    //Token Text (Array of 74 rows)
-    // mapping(uint256 => string) internal _tokenText;        // Mapping for Case Contracts
-    mapping(uint256 => string[]) public _tokenText; // Mapping for Case Contracts
+    //--- Functions ---
 
     constructor() ERC721("WhitePaper", "WP") EIP712("WhitePaper", "1.0") {}
 
@@ -64,7 +69,7 @@ contract Whitepaper is
     function price(uint256 _tokenId) public view returns (uint256) {
         uint256 curPrice = _confPriceStart +
             ((_tokenId / _confPriceInterval) * _confPriceStep);
-        return curPrice;
+        return (1 ether * curPrice);
     }
 
     //Get Token Text
@@ -79,7 +84,7 @@ contract Whitepaper is
         require(!_notEmpty[tokenId], "Paper Already Written");
         //Save
         _tokenText[tokenId] = text;
-        _pageName[tokenId] = pageName;
+        _tokenName[tokenId] = pageName;
         //Mark
         _notEmpty[tokenId] = true;
         //Event
@@ -94,7 +99,11 @@ contract Whitepaper is
         );
          //Validate - Bot Protection
         require(tx.origin == _msgSender(), "No Bots!");
-        require(msg.value <= mintPrice(), "Insuficient Funds");
+        require(msg.value >= mintPrice(), "Insuficient Payment Sent.");
+        require(msg.value == mintPrice(), "Excessive Payment Sent.");   //Dev Check
+
+        // console.log("Minting White Paper for: ", msg.value,  mintPrice());
+
         _tokenIdCounter.increment();
         uint256 tokenId = _tokenIdCounter.current();
         _safeMint(to, tokenId);
@@ -130,7 +139,7 @@ contract Whitepaper is
                 string(
                     abi.encodePacked(
                         '{"name": "',
-                        _pageName[tokenId],
+                        _tokenName[tokenId],
                         '",',
                         '"image_data": "',
                         _createSvg(tokenId),
