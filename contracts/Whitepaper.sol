@@ -7,6 +7,7 @@ import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Burnable.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/security/Pausable.sol";
 import "@openzeppelin/contracts/utils/cryptography/draft-EIP712.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/draft-ERC721Votes.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
@@ -20,6 +21,7 @@ contract Whitepaper is
     ERC721,
     ERC721URIStorage,
     ERC721Burnable,
+    Pausable,
     Ownable,
     EIP712,
     Royalties,
@@ -64,6 +66,18 @@ contract Whitepaper is
         treasury = 0x3b7a108fb52bC263d8fCB6C77dFF5b9B152C5f2c;
     }
 
+     function pause() public onlyOwner {
+        _pause();
+    }
+
+    function unpause() public onlyOwner {
+        _unpause();
+    }
+
+    function _beforeTokenTransfer(address from, address to, uint256 tokenId) internal whenNotPaused override {
+        super._beforeTokenTransfer(from, to, tokenId);
+    }
+
     //Price for next Mint
     function mintPrice() public view returns (uint256) {
         uint256 nextTokenId = _tokenIdCounter.current() + 1;
@@ -82,7 +96,7 @@ contract Whitepaper is
         return _tokenText[_tokenId];
     }
 
-    function typewrite(uint256 tokenId, string memory pageName, string[] memory text) external {
+    function typewrite(uint256 tokenId, string memory pageName, string[] memory text) external whenNotPaused {
         //Validate
         require(_msgSender() == ownerOf(tokenId), "Only the owner can write the paper");
         //Single Write for each token
