@@ -8,7 +8,7 @@ import "./IERC2981.sol";
 /// Royalties
 abstract contract Royalties is IERC2981 {
    // 3rd party royalties
-    uint96 private constant _defaultRoyaltyBPS = 100; //1% royalties
+    uint96 public royaltyBPS = 100; //1% royalties
     bytes4 private constant _INTERFACE_ID_ERC2981 = 0x2a55205a;
     address public treasury;
 
@@ -22,7 +22,7 @@ abstract contract Royalties is IERC2981 {
     }
 
     function royaltyInfo(uint256, uint256 salePrice_) external view override returns (address receiver, uint256 royaltyAmount) {
-        uint256 royaltyAmount_ = (salePrice_ * _defaultRoyaltyBPS) / 10000;
+        uint256 royaltyAmount_ = (salePrice_ * royaltyBPS) / 10000;
         return (treasury, royaltyAmount_);
     }
 

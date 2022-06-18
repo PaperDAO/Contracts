@@ -32,17 +32,15 @@ contract Whitepaper is
     uint256 public constant MAX_WHITE_PAPER_SUPPLY = 10000;
     
     // 3rd party royalties
-    uint96 private constant _defaultRoyaltyBPS = 100; //1% royalties
-    bytes4 private constant _INTERFACE_ID_ERC2981 = 0x2a55205a;
+    // uint96 private constant _defaultRoyaltyBPS = 100; //1% royalties
+    // bytes4 private constant _INTERFACE_ID_ERC2981 = 0x2a55205a;
 
     //Conf
     uint256 public _confPriceStart = 0;
     uint256 public _confPriceInterval = 1000;
     uint256 public _confPriceStep = 1;
-    uint256 public _lastPrice;
+    // uint256 public _lastPrice;
 
-    //Treasury Address
-    // address public treasury = 0x3b7a108fb52bC263d8fCB6C77dFF5b9B152C5f2c;
     //Token's State (Empty/NotEmpty)
     mapping(uint256 => bool) internal _notEmpty;
     //Page/Token's Name
@@ -72,9 +70,25 @@ contract Whitepaper is
 
     /// Get Price for Token
     function price(uint256 _tokenId) public view returns (uint256) {
-        uint256 curPrice = _confPriceStart +
-            ((_tokenId / _confPriceInterval) * _confPriceStep);
+        uint256 curPrice = _confPriceStart + ((_tokenId / _confPriceInterval) * _confPriceStep);
         return (1 ether * curPrice);
+    }
+
+    /// Set Price Configuration
+    function setPriceConf(uint priceStart, uint priceInterval, uint priceStep) external onlyOwner {
+        _confPriceStart = priceStart;
+        _confPriceInterval = priceInterval;
+        _confPriceStep = priceStep;
+    }
+
+    /// Set Treasury Address
+    function setTreasury(address treasury_) external onlyOwner {
+        treasury = treasury_;
+    }
+    
+    /// Set Fee
+    function setSecondaryFee(uint96 royaltyBPS_) external onlyOwner {
+        royaltyBPS = royaltyBPS_;
     }
 
     //Get Token Text

@@ -48,7 +48,12 @@ describe("Paper NFT", function () {
     const receipt: ContractReceipt = WPContract.connect(notOwner).typewrite(1, pageName, content);
     await expect(receipt).to.be.revertedWith("Only the owner can write the paper");
   });
-  
+  /* Passed
+  it("Should Change Pricing", async function () {
+    await WPContract.setPriceConf(1, 500, 1);
+  });
+  */
+  /* Passed
   it("Should Increase Price", async function () {
     let supply = 10000;
     let interval = 1000;
@@ -61,7 +66,7 @@ describe("Paper NFT", function () {
       await WPContract.mint(this.testerAddr, { value: price});
     }
   });
-
+  */
   it("Should Write", async function () {
     await WPContract.connect(tester).typewrite(1, "Name1", content);
     let tx = await WPContract.connect(owner).typewrite(2, "Name2", content);
