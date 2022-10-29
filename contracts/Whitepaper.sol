@@ -32,7 +32,7 @@ contract Whitepaper is
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIdCounter;
     uint256 public constant MAX_WHITE_PAPER_SUPPLY = 10000;
-    
+
     // 3rd party royalties
     // uint96 private constant _defaultRoyaltyBPS = 100; //1% royalties
     // bytes4 private constant _INTERFACE_ID_ERC2981 = 0x2a55205a;
@@ -48,14 +48,18 @@ contract Whitepaper is
     //Page/Token's Name
     mapping(uint256 => string) internal _tokenName;
     //Token Text (Array of ~32 rows)
-    mapping(uint256 => string[]) public _tokenText; 
-    
+    mapping(uint256 => string[]) public _tokenText;
+
     //--- Events ---
-       
+
     /// URI Chnage Event
     event URI(string value, uint256 indexed tokenId);
     /// Emit Raw Page Content
-    event PageContact(string pageName, string[] pageContant, uint256 indexed tokenId);
+    event PageContact(
+        string pageName,
+        string[] pageContant,
+        uint256 indexed tokenId
+    );
 
     //--- Functions ---
 
@@ -64,7 +68,7 @@ contract Whitepaper is
         treasury = 0x3b7a108fb52bC263d8fCB6C77dFF5b9B152C5f2c;
     }
 
-     function pause() public onlyOwner {
+    function pause() public onlyOwner {
         _pause();
     }
 
@@ -72,7 +76,11 @@ contract Whitepaper is
         _unpause();
     }
 
-    function _beforeTokenTransfer(address from, address to, uint256 tokenId) internal whenNotPaused override {
+    function _beforeTokenTransfer(
+        address from,
+        address to,
+        uint256 tokenId
+    ) internal override whenNotPaused {
         super._beforeTokenTransfer(from, to, tokenId);
     }
 
@@ -84,12 +92,17 @@ contract Whitepaper is
 
     /// Get Price for Token
     function price(uint256 _tokenId) public view returns (uint256) {
-        uint256 curPrice = _confPriceStart + ((_tokenId / _confPriceInterval) * _confPriceStep);
+        uint256 curPrice = _confPriceStart +
+            ((_tokenId / _confPriceInterval) * _confPriceStep);
         return (1 ether * curPrice);
     }
 
     /// Set Price Configuration
-    function setPriceConf(uint priceStart, uint priceInterval, uint priceStep) external onlyOwner {
+    function setPriceConf(
+        uint256 priceStart,
+        uint256 priceInterval,
+        uint256 priceStep
+    ) external onlyOwner {
         _confPriceStart = priceStart;
         _confPriceInterval = priceInterval;
         _confPriceStep = priceStep;
@@ -99,7 +112,7 @@ contract Whitepaper is
     function setTreasury(address treasury_) external onlyOwner {
         treasury = treasury_;
     }
-    
+
     /// Set Fee
     function setSecondaryFee(uint96 royaltyBPS_) external onlyOwner {
         royaltyBPS = royaltyBPS_;
@@ -110,9 +123,16 @@ contract Whitepaper is
         return _tokenText[_tokenId];
     }
 
-    function typewrite(uint256 tokenId, string memory pageName, string[] memory text) external whenNotPaused {
+    function typewrite(
+        uint256 tokenId,
+        string memory pageName,
+        string[] memory text
+    ) external whenNotPaused {
         //Validate
-        require(_msgSender() == ownerOf(tokenId), "Only the owner can write the paper");
+        require(
+            _msgSender() == ownerOf(tokenId),
+            "Only the owner can write the paper"
+        );
         //Single Write for each token
         require(!_notEmpty[tokenId], "Paper Already Written");
         //Save
@@ -130,10 +150,10 @@ contract Whitepaper is
             MAX_WHITE_PAPER_SUPPLY > _tokenIdCounter.current(),
             "All papers was minted!"
         );
-         //Validate - Bot Protection
+        //Validate - Bot Protection
         require(tx.origin == _msgSender(), "No Bots!");
         require(msg.value >= mintPrice(), "Insuficient Payment Sent.");
-        require(msg.value == mintPrice(), "Excessive Payment Sent.");   //Dev Check
+        require(msg.value == mintPrice(), "Excessive Payment Sent."); //Dev Check
 
         _tokenIdCounter.increment();
         uint256 tokenId = _tokenIdCounter.current();
@@ -169,8 +189,12 @@ contract Whitepaper is
             bytes(
                 string(
                     abi.encodePacked(
-                        '{"name": "', _tokenName[tokenId], '",',
-                        '"image_data": "', _createSvg(tokenId), '"',
+                        '{"name": "',
+                        _tokenName[tokenId],
+                        '",',
+                        '"image_data": "',
+                        _createSvg(tokenId),
+                        '"',
                         '"attributes": [{"trait_type": "type", "value": "A4"},{"trait_type": "Inches", "value": "8-1/4 x 11-3/4 in"},{"trait_type": "Millimeters", "value": "210 x 297 mm"}, ]',
                         "}"
                     )
@@ -181,7 +205,8 @@ contract Whitepaper is
     }
 
     function _createSvg(uint256 tokenId) private view returns (bytes memory) {
-        bytes memory SVGPrefix = "<svg width='2494' height='3523' viewBox='0 0 2494 3523' fill='none' xmlns='http://www.w3.org/2000/svg'> <g filter='url(#filter0_d_1815_20075)'> <path d='M0 0.5H2480V3508.5H184.642L0 3309.79V0.5Z' fill='white'/> <path d='M187.142 3309.79V3307.29H184.642H2.5V3H2477.5V3506H187.142V3309.79ZM182.142 3312.29V3502.14L5.73556 3312.29H182.142Z' stroke='#A3A1A1' stroke-width='5'/> </g> <defs> <filter id='filter0_d_1815_20075' x='0' y='0.5' width='2494' height='3522' filterUnits='userSpaceOnUse' color-interpolation-filters='sRGB'> <feFlood flood-opacity='0' result='BackgroundImageFix'/><feColorMatrix in='SourceAlpha' type='matrix' values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0' result='hardAlpha'/> <feOffset dx='10' dy='10'/><feGaussianBlur stdDeviation='2'/> <feComposite in2='hardAlpha' operator='out'/> <feColorMatrix type='matrix' values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0'/> <feBlend mode='normal' in2='BackgroundImageFix' result='effect1_dropShadow_1815_20075'/> <feBlend mode='normal' in='SourceGraphic' in2='effect1_dropShadow_1815_20075' result='shape'/> </filter></defs>";
+        bytes
+            memory SVGPrefix = "<svg width='2494' height='3523' viewBox='0 0 2494 3523' fill='none' xmlns='http://www.w3.org/2000/svg'> <g filter='url(#filter0_d_1815_20075)'> <path d='M0 0.5H2480V3508.5H184.642L0 3309.79V0.5Z' fill='white'/> <path d='M187.142 3309.79V3307.29H184.642H2.5V3H2477.5V3506H187.142V3309.79ZM182.142 3312.29V3502.14L5.73556 3312.29H182.142Z' stroke='#A3A1A1' stroke-width='5'/> </g> <defs> <filter id='filter0_d_1815_20075' x='0' y='0.5' width='2494' height='3522' filterUnits='userSpaceOnUse' color-interpolation-filters='sRGB'> <feFlood flood-opacity='0' result='BackgroundImageFix'/><feColorMatrix in='SourceAlpha' type='matrix' values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0' result='hardAlpha'/> <feOffset dx='10' dy='10'/><feGaussianBlur stdDeviation='2'/> <feComposite in2='hardAlpha' operator='out'/> <feColorMatrix type='matrix' values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0'/> <feBlend mode='normal' in2='BackgroundImageFix' result='effect1_dropShadow_1815_20075'/> <feBlend mode='normal' in='SourceGraphic' in2='effect1_dropShadow_1815_20075' result='shape'/> </filter></defs>";
         bytes memory svgText = "";
         bytes memory SVGSuffix = "</svg>";
         for (uint256 i = 0; i < _tokenText[tokenId].length; i++) {
@@ -190,13 +215,12 @@ contract Whitepaper is
                 "<text x='200' y='",
                 Strings.toString(250 + (100 * i)),
                 "' font-family='Arial' font-size='53.3' fill='black'>",
-                 currentLine, 
-                 "</text>"
+                currentLine,
+                "</text>"
             );
             //Concat to main string
             svgText = abi.encodePacked(svgText, content);
         }
         return bytes(abi.encodePacked(SVGPrefix, svgText, SVGSuffix));
     }
-
 }
