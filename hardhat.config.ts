@@ -52,6 +52,10 @@ const config: HardhatUserConfig = {
       //gasPrice: 8000000000,
       gasPrice: 100000000,
     },
+    goerli: {
+      url: process.env.GOERLI_RPC || "",
+      accounts: process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
+    },
     mumbai: {
       // url: `https://polygon-mumbai.infura.io/v3/${process.env.INFURA_KEY}`,
       // url: process.env.ALCHEMY_MUMBAI_URL,
