@@ -16,7 +16,7 @@ export type { ERC165 } from "./ERC165";
 export type { IERC165 } from "./IERC165";
 export type { IERC2981 } from "./IERC2981";
 export type { Royalties } from "./Royalties";
-export type { Whitepaper } from "./Whitepaper";
+export type { Paper721 } from "./Paper721";
 
 export { Ownable__factory } from "./factories/Ownable__factory";
 export { IVotes__factory } from "./factories/IVotes__factory";
@@ -33,4 +33,4 @@ export { ERC165__factory } from "./factories/ERC165__factory";
 export { IERC165__factory } from "./factories/IERC165__factory";
 export { IERC2981__factory } from "./factories/IERC2981__factory";
 export { Royalties__factory } from "./factories/Royalties__factory";
-export { Whitepaper__factory } from "./factories/Whitepaper__factory";
+export { Paper721__factory } from "./factories/Paper721__factory";

@@ -73,9 +73,9 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.Royalties__factory>;
     getContractFactory(
-      name: "Whitepaper",
+      name: "Paper721",
       signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.Whitepaper__factory>;
+    ): Promise<Contracts.Paper721__factory>;
 
     getContractAt(
       name: "Ownable",
@@ -153,10 +153,10 @@ declare module "hardhat/types/runtime" {
       signer?: ethers.Signer
     ): Promise<Contracts.Royalties>;
     getContractAt(
-      name: "Whitepaper",
+      name: "Paper721",
       address: string,
       signer?: ethers.Signer
-    ): Promise<Contracts.Whitepaper>;
+    ): Promise<Contracts.Paper721>;
 
     // default types
     getContractFactory(

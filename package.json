@@ -16,6 +16,7 @@
     "@openzeppelin/contracts": "^4.5.0",
     "@openzeppelin/hardhat-upgrades": "^1.19.0",
     "@types/mocha": "^9.1.0",
+    "@types/node": "^18.11.9",
     "chai": "^4.3.6",
     "dotenv": "^16.0.0",
     "ethereum-waffle": "^3.4.0",
