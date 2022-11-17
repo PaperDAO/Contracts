@@ -17,7 +17,7 @@ import "./abstract/Royalties.sol";
 /**
  * @title Whitepaper - A Contract that mints Empty Tokens
  */
-contract Whitepaper is
+contract Paper721 is
     ERC721,
     ERC721URIStorage,
     ERC721Burnable,

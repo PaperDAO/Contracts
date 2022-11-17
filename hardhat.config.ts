@@ -22,7 +22,7 @@ task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
 // This is a sample Hardhat task. To learn how to create your own go to
 // https://hardhat.org/guides/create-task.html
 task("deploy", "deploying", async (taskArgs, hre) => {
-  const Whitepaper = await hre.ethers.getContractFactory("Whitepaper");
+  const Whitepaper = await hre.ethers.getContractFactory("Paper721");
   const whitepaper = await Whitepaper.deploy();
   console.log("Deploying ", whitepaper.address);
   await whitepaper.deployed();
