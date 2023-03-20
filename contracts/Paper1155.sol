@@ -70,7 +70,7 @@ contract Paper1155 is
     }
 
     /// Update Contract URI
-    function setURI(string memory newuri) public onlyOwner {
+    function setContractURI(string memory newuri) public onlyOwner {
         _setURI(newuri);
     }
 
